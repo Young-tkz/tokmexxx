@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+/* ---- Light theme tokens ---- */
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+/* Map vars into Tailwind v4 design tokens */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  /* You can swap these for Geist if you wire those fonts in */
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+  sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+  "Liberation Mono", "Courier New", monospace;
+}
+
+/* ---- Base document styling ---- */
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--background);  /* always white now */
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/* Optional: basic reset-ish bits */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
