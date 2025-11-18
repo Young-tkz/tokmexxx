@@ -11,8 +11,20 @@ export async function POST(req) {
             );
         }
 
-        const apiUrl =
-            `https://tiktok-video-no-watermark2.p.rapidapi.com/?url=${encodeURIComponent(url)}`;
+        // 🔍 Debug: check env vars on the server
+        console.log("RAPIDAPI_KEY present?", !!process.env.RAPIDAPI_KEY);
+        console.log("RAPIDAPI_HOST:", process.env.RAPIDAPI_HOST);
+
+        if (!process.env.RAPIDAPI_KEY || !process.env.RAPIDAPI_HOST) {
+            return NextResponse.json(
+                { error: "Server configuration error: missing API credentials." },
+                { status: 500 }
+            );
+        }
+
+        const apiUrl = `https://tiktok-video-no-watermark2.p.rapidapi.com/?url=${encodeURIComponent(
+            url
+        )}`;
 
         const response = await fetch(apiUrl, {
             method: "GET",
@@ -24,6 +36,10 @@ export async function POST(req) {
 
         const data = await response.json();
 
+        // 🔍 Debug: log status and any error message from RapidAPI
+        console.log("RapidAPI status:", response.status);
+        console.log("RapidAPI raw response snippet:", JSON.stringify(data).slice(0, 300));
+
         if (!response.ok) {
             return NextResponse.json(
                 { error: data?.message || "API error" },
@@ -31,15 +47,15 @@ export async function POST(req) {
             );
         }
 
-        // Format frontend data
+        // ✅ Format data for the frontend
         return NextResponse.json({
             title: data?.data?.title || "",
             thumbnail: data?.data?.cover || "",
             noWatermark: data?.data?.play || "",
             hd: data?.data?.wmplay || "",
         });
-
     } catch (err) {
+        console.error("Server error in /api/download:", err);
         return NextResponse.json(
             { error: "Server error" },
             { status: 500 }
